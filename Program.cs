@@ -1,4 +1,5 @@
 ﻿using System;
+using aula02DevOpsPoker.RegraNegocio;
 
 namespace aula02DevOpsPoker
 {
@@ -7,6 +8,8 @@ namespace aula02DevOpsPoker
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
+            Jogo jogo = new Jogo();
+            jogo.Iniciar();
         }
     }
 }
