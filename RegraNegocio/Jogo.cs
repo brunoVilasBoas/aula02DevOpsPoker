@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using aula02DevOpsPoker.Objetos;
 using aula02DevOpsPoker.Poco;
 
@@ -65,8 +66,7 @@ namespace aula02DevOpsPoker.RegraNegocio
                 Nipe = SelecionarItemAleatorio<Nipe>(nipes)
             };
 
-            //Verificar validação
-            while (listaReferancia.Contains(cartaNipe))
+            while (listaReferancia.Any(a => a.Carta == cartaNipe.Carta && a.Nipe == cartaNipe.Nipe))
             {
                 cartaNipe = new CartaNipe
                 {
