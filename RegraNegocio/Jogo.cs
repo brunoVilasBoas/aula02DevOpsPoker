@@ -193,9 +193,11 @@ namespace aula02DevOpsPoker.RegraNegocio
             if (cartasJogador1 != null && cartasJogador2 != null)
             {
                 cartasJogador1 = cartasJogador1.GroupBy(g => g)
+                                 .Where(w => w.Count() == 3)
                                  .Select(s => new CartaNaipe { Carta = s.Key.Carta, Naipe = s.Key.Naipe })
                                  .ToList();
                 cartasJogador2 = cartasJogador2.GroupBy(g => g)
+                                 .Where(w => w.Count() == 3)
                                  .Select(s => new CartaNaipe { Carta = s.Key.Carta, Naipe = s.Key.Naipe })
                                  .ToList();
 
