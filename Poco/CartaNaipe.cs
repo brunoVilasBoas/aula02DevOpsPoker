@@ -2,9 +2,9 @@ using System;
 
 namespace aula02DevOpsPoker.Poco
 {
-    public class CartaNipe
+    public class CartaNaipe
     {
         public Carta Carta { get; set; }
-        public Nipe Nipe { get; set; }
+        public Naipe Naipe { get; set; }
     }
 }
