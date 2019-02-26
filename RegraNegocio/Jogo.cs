@@ -83,8 +83,23 @@ namespace aula02DevOpsPoker.RegraNegocio
 
         private void MostrarVencedor()
         {
-            var vencedor = ValidaCartaAlta(_cartasJogador1, _cartasJogador2);
-            var resultado = ValidaParTrinca();
+            //Verificar validações
+            if (ValidaRoyalFlush() != EnumVencedor.Empate)
+                Console.Write(ValidaRoyalFlush().ToString());
+            else if (ValidaStraightFlush() != EnumVencedor.Empate)
+                Console.Write(ValidaStraightFlush().ToString());
+            else if (ValidaQuadra() != EnumVencedor.Empate)
+                Console.Write(ValidaQuadra().ToString());
+            else if (ValidaFullHouse() != EnumVencedor.Empate)
+                Console.Write(ValidaFullHouse().ToString());
+            else if (ValidaFlush() != EnumVencedor.Empate)
+                Console.Write(ValidaFlush().ToString());
+            else if (ValidaStraight() != EnumVencedor.Empate)
+                Console.Write(ValidaStraight().ToString());
+            else if (ValidaParTrinca() != EnumVencedor.Empate)
+                Console.Write(ValidaParTrinca().ToString());
+            else if (ValidaCartaAlta(_cartasJogador1, _cartasJogador2) != EnumVencedor.Empate)
+                Console.Write(ValidaCartaAlta(_cartasJogador1, _cartasJogador2).ToString());
         }
 
         private EnumVencedor ValidaCartaAlta(List<CartaNaipe> jogador1, List<CartaNaipe> jogador2)
@@ -133,26 +148,34 @@ namespace aula02DevOpsPoker.RegraNegocio
         {
             bool straightJogador1 = false;
             bool straightJogador2 = false;
+            var id_carta = 0;
 
             _cartasJogador1.ForEach(j1 =>
             {
-                var id_carta = 0;
                 if (j1.Carta.Id > id_carta)
+                {
                     straightJogador1 = true;
+                    id_carta = j1.Carta.Id;
+                }
                 else
+                {
+                    straightJogador1 = false;
                     return;
+                }
             });
 
             _cartasJogador2.ForEach(j1 =>
             {
-                var id_carta = 0;
                 if (j1.Carta.Id > id_carta)
                 {
                     straightJogador2 = true;
                     id_carta = j1.Carta.Id;
                 }
                 else
+                {
+                    straightJogador1 = false;
                     return;
+                }
             });
 
             if (straightJogador1 && straightJogador2)
@@ -166,10 +189,10 @@ namespace aula02DevOpsPoker.RegraNegocio
             bool flushJogador1 = false;
             bool flushJogador2 = false;
 
-            flushJogador1 = _cartasJogador1.GroupBy(g => g)
+            flushJogador1 = _cartasJogador1.GroupBy(g => g.Naipe)
                             .Any(j1 => j1.Count() == 5);
 
-            flushJogador2 = _cartasJogador2.GroupBy(g => g)
+            flushJogador2 = _cartasJogador2.GroupBy(g => g.Naipe)
                             .Any(j1 => j1.Count() == 5);
 
             if (flushJogador1 && flushJogador2)
@@ -218,10 +241,119 @@ namespace aula02DevOpsPoker.RegraNegocio
                                  .Select(s => new CartaNaipe { Carta = s.Key.Carta, Naipe = s.Key.Naipe })
                                  .ToList();
 
-            if(cartasJogador1 != null && cartasJogador2 != null)
+            if (cartasJogador1 != null && cartasJogador2 != null)
                 return ValidaCartaAlta(cartasJogador1, cartasJogador2);
 
             return EnumVencedor.Empate;
+        }
+
+        private EnumVencedor ValidaStraightFlush()
+        {
+            bool straightJogador1 = false;
+            bool straightJogador2 = false;
+            bool flushJogador1 = false;
+            bool flushJogador2 = false;
+            var id_carta = 0;
+
+            _cartasJogador1.ForEach(j1 =>
+            {
+                if (j1.Carta.Id > id_carta)
+                {
+                    straightJogador1 = true;
+                    id_carta = j1.Carta.Id;
+                }
+                else
+                {
+                    straightJogador1 = false;
+                    return;
+                }
+            });
+
+            _cartasJogador2.ForEach(j1 =>
+            {
+                if (j1.Carta.Id > id_carta)
+                {
+                    straightJogador2 = true;
+                    id_carta = j1.Carta.Id;
+                }
+                else
+                {
+                    straightJogador1 = false;
+                    return;
+                }
+            });
+
+            if (straightJogador1 && straightJogador2)
+            {
+                flushJogador1 = _cartasJogador1.GroupBy(g => g.Naipe)
+                            .Any(j1 => j1.Count() == 5);
+
+                flushJogador2 = _cartasJogador2.GroupBy(g => g.Naipe)
+                                .Any(j1 => j1.Count() == 5);
+
+                if (flushJogador1 && flushJogador2)
+                    return ValidaCartaAlta(_cartasJogador1, _cartasJogador2);
+            }
+
+            return EnumVencedor.Empate;
+        }
+
+        private EnumVencedor ValidaRoyalFlush()
+        {
+            bool straightJogador1 = false;
+            bool straightJogador2 = false;
+            bool flushJogador = false;
+            EnumVencedor _vencedor = new EnumVencedor();
+            var id_carta = 8;
+
+            _cartasJogador1.ForEach(j1 =>
+            {
+                if (j1.Carta.Id > id_carta)
+                {
+                    straightJogador1 = true;
+                    id_carta = j1.Carta.Id;
+                }
+                else
+                {
+                    straightJogador1 = false;
+                    return;
+                }
+            });
+
+            _cartasJogador2.ForEach(j1 =>
+            {
+                if (j1.Carta.Id > id_carta)
+                {
+                    straightJogador2 = true;
+                    id_carta = j1.Carta.Id;
+                }
+                else
+                {
+                    straightJogador1 = false;
+                    return;
+                }
+            });
+
+            if (straightJogador1 && !straightJogador2)
+            {
+                flushJogador = _cartasJogador1.GroupBy(g => g.Naipe)
+                            .Any(j1 => j1.Count() == 5);
+
+                if (flushJogador)
+                    _vencedor = EnumVencedor.Jogador1;
+            }
+            else if (!straightJogador1 && straightJogador2)
+            {
+                flushJogador = _cartasJogador1.GroupBy(g => g.Naipe)
+                            .Any(j1 => j1.Count() == 5);
+
+                if (flushJogador)
+                    _vencedor = EnumVencedor.Jogador2;
+            }
+            else
+                _vencedor = EnumVencedor.Empate;
+
+            return _vencedor;
         }
     }
 }
