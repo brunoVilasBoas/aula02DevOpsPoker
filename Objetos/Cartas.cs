@@ -24,7 +24,7 @@ namespace aula02DevOpsPoker.Objetos
             int peso = 9;
             foreach (var item in letras)
             {
-                count = count++;
+                count = count + 1;
                 carta.Id = count;
                 carta.CartaNome = item;
                 carta.Peso = peso++;

@@ -83,7 +83,6 @@ namespace aula02DevOpsPoker.RegraNegocio
 
         private void MostrarVencedor()
         {
-            //Verificar validações
             if (ValidaRoyalFlush() != EnumVencedor.Empate)
                 Console.Write(ValidaRoyalFlush().ToString());
             else if (ValidaStraightFlush() != EnumVencedor.Empate)
@@ -203,28 +202,31 @@ namespace aula02DevOpsPoker.RegraNegocio
 
         private EnumVencedor ValidaFullHouse()
         {
-            var cartasJogador1 = _cartasJogador1.GroupBy(g => g)
+            var cartasJogador1 = _cartasJogador1.GroupBy(g => g.Carta)
                                 .Where(w => w.Count() == 3 && w.Count() == 2)
-                                .Select(s => new CartaNaipe { Carta = s.Key.Carta, Naipe = s.Key.Naipe })
+                                .Select(s => new { Id = s.Key.Id })
                                 .ToList();
 
-            var cartasJogador2 = _cartasJogador2.GroupBy(g => g)
+            var cartasJogador2 = _cartasJogador2.GroupBy(g => g.Carta)
                                 .Where(w => w.Count() == 3 && w.Count() == 2)
-                                .Select(s => new CartaNaipe { Carta = s.Key.Carta, Naipe = s.Key.Naipe })
+                                .Select(s => new { Id = s.Key.Id })
                                 .ToList();
 
             if (cartasJogador1 != null && cartasJogador2 != null)
             {
-                cartasJogador1 = cartasJogador1.GroupBy(g => g)
-                                 .Where(w => w.Count() == 3)
-                                 .Select(s => new CartaNaipe { Carta = s.Key.Carta, Naipe = s.Key.Naipe })
-                                 .ToList();
-                cartasJogador2 = cartasJogador2.GroupBy(g => g)
-                                 .Where(w => w.Count() == 3)
-                                 .Select(s => new CartaNaipe { Carta = s.Key.Carta, Naipe = s.Key.Naipe })
-                                 .ToList();
+                var cartaNaipe1 = _cartasJogador1.Where(w => cartasJogador1.GroupBy(g => g)
+                                                 .Where(wc => wc.Count() == 3)
+                                                 .Any(a => a.Key.Id == w.Carta.Id))
+                                                 .Select(s => new CartaNaipe { Carta = s.Carta, Naipe = s.Naipe })
+                                                 .ToList();
 
-                return ValidaCartaAlta(cartasJogador1, cartasJogador2);
+                var cartaNaipe2 = _cartasJogador2.Where(w => cartasJogador2.GroupBy(g => g)
+                                                 .Where(wc => wc.Count() == 3)
+                                                 .Any(a => a.Key.Id == w.Carta.Id))
+                                                 .Select(s => new CartaNaipe { Carta = s.Carta, Naipe = s.Naipe })
+                                                 .ToList();
+
+                return ValidaCartaAlta(cartaNaipe1, cartaNaipe2);
             }
 
             return EnumVencedor.Empate;
@@ -233,11 +235,11 @@ namespace aula02DevOpsPoker.RegraNegocio
         private EnumVencedor ValidaQuadra()
         {
             var cartasJogador1 = _cartasJogador1.GroupBy(g => g)
-                                 .Where(w => w.Count() == 4)
+                                 .Where(w => w.Count(c => c.Carta.Id == c.Carta.Id) == 4)
                                  .Select(s => new CartaNaipe { Carta = s.Key.Carta, Naipe = s.Key.Naipe })
                                  .ToList();
             var cartasJogador2 = _cartasJogador2.GroupBy(g => g)
-                                 .Where(w => w.Count() == 4)
+                                 .Where(w => w.Count(c => c.Carta.Id == c.Carta.Id) == 4)
                                  .Select(s => new CartaNaipe { Carta = s.Key.Carta, Naipe = s.Key.Naipe })
                                  .ToList();
 
@@ -269,6 +271,7 @@ namespace aula02DevOpsPoker.RegraNegocio
                 }
             });
 
+            id_carta = 0;
             _cartasJogador2.ForEach(j1 =>
             {
                 if (j1.Carta.Id > id_carta)
@@ -320,6 +323,7 @@ namespace aula02DevOpsPoker.RegraNegocio
                 }
             });
 
+            id_carta = 8;
             _cartasJogador2.ForEach(j1 =>
             {
                 if (j1.Carta.Id > id_carta)
